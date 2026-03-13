@@ -1,1 +1,92 @@
+void main() {
+ 
+  print("Задача 1");
+  print(formatName("Дональд ", "Джон ")); 
+  print(formatName("Дональд", "Джон ", "Трамп ")); 
 
+  
+  print("Задача 2");
+  print(calculate(18, 5, "+"));
+  print(calculate(20, 0, "/")); 
+
+  print("Задача 3");
+  countSigns([1, -5, 0, 3, -1, 0]);
+
+ 
+  print("Задача 4");
+ 
+  print(transformList([1, 2, 3], (x) => x * 2)); 
+
+
+  print("Задача 5");
+  print(sumDigits(123)); 
+}
+
+
+String formatName(String name, String surname, [String? patronymic]) {
+  if (patronymic == null) {
+    return "$surname $name";
+  } else {
+    return "$surname $name $patronymic";
+  }
+}
+
+
+double? calculate(double a, double b, String operation) {
+  switch (operation) {
+    case '+':
+      return a + b;
+    case '-':
+      return a - b;
+    case '*':
+      return a * b;
+    case '/':
+      if (b == 0) {
+        return null;
+      }
+      return a / b;
+    default:
+      return null; 
+  }
+}
+
+
+void countSigns(List<int> numbers) {
+  int positive = 0;
+  int negative = 0;
+  int zero = 0;
+
+  for (int num in numbers) {
+    if (num > 0) {
+      positive++;
+    } else if (num < 0) {
+      negative++;
+    } else {
+      zero++;
+    }
+  }
+
+  print("Положительных: $positive");
+  print("Отрицательных: $negative");
+  print("Нулевых: $zero");
+}
+
+
+List<int> transformList(List<int> list, int Function(int) converter) {
+  List<int> newList = [];
+  for (int item in list) {
+    newList.add(converter(item));
+  }
+  return newList;
+}
+
+
+int sumDigits(int n) {
+  if (n < 10) {
+    return n;
+  }
+  return (n % 10) + sumDigits(n ~/ 10);
+}
+
+
+  

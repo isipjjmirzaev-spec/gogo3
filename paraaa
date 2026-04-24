@@ -1,1 +1,171 @@
+void main() {
+  print("1. Кружка и Человек");
+  Mug mug = Mug("Чай");
+  Person person = Person("Анна");
+  person.drink(mug);
 
+  print("\n2. Шкаф");
+  Closet closet = Closet();
+  closet.put("Верх", "Шапка");
+  closet.put("Низ", "Обувь");
+  print(closet.get("Верх"));
+  print(closet.get("Низ"));
+
+  print("\n3. Гриф");
+  Barbell bar = Barbell(50);
+  bar.addPlate(10);
+  bar.addPlate(20);
+  bar.addPlate(30);
+  print("Вес: ${bar.currentWeight}");
+
+  print("\n4. Конвертер валют");
+  CurrencyConverter conv = CurrencyConverter({"USD": 1, "RUB": 90, "EUR": 0.9});
+  print(conv.convert(10, "USD", "RUB"));
+  print(conv.convert(90, "RUB", "EUR"));
+
+  print("\n5. Гараж (дженерики)");
+  Garage<String> garage = Garage<String>();
+  garage.park("Машина");
+  garage.park("Мотоцикл");
+  print(garage.unpark());
+  print(garage.unpark());
+
+  print("\n6. Перегрузка операторов");
+  MyNum a = MyNum(10);
+  MyNum b = MyNum(3);
+  print(a + b);
+  print(a - b);
+  print(a * b);
+  print(a / b);
+
+  print("\n7. Автомобиль (перечисления)");
+  Car car = Car();
+  car.drive();
+  car.turn();
+  car.stop();
+  car.showState();
+
+  print("\n8. Фигуры и макс. площадь");
+  FigureManager manager = FigureManager();
+  manager.add(Rectangle(4, 5));
+  manager.add(Triangle(3, 6));
+  manager.add(Circle(2));
+  print("Макс. площадь: ${manager.getMaxArea()}");
+}
+
+class Mug {
+  String drink;
+  Mug(this.drink);
+  void empty() => drink = "пусто";
+}
+
+class Person {
+  String name;
+  Person(this.name);
+  void drink(Mug m) {
+    if (m.drink != "пусто") {
+      print("$name пьет: ${m.drink}");
+      m.empty();
+    } else {
+      print("Кружка пуста");
+    }
+  }
+}
+
+class Closet {
+  final Map<String, List<String>> parts = {};
+  void put(String part, String item) {
+    parts.putIfAbsent(part, () => []);
+    parts[part]!.add(item);
+  }
+  String? get(String part) {
+    if (parts[part] != null && parts[part]!.isNotEmpty) {
+      return parts[part]!.removeLast();
+    }
+    return null;
+  }
+}
+
+class Barbell {
+  double maxWeight;
+  double currentWeight = 0;
+  Barbell(this.maxWeight);
+  void addPlate(double w) {
+    if (currentWeight + w <= maxWeight) {
+      currentWeight += w;
+    }
+  }
+}
+
+class CurrencyConverter {
+  final Map<String, double> rates;
+  CurrencyConverter(this.rates);
+  double convert(double amount, String from, String to) {
+    if (!rates.containsKey(from) || !rates.containsKey(to)) return 0;
+    return amount * rates[from]! / rates[to]!;
+  }
+}
+
+class Garage<T> {
+  final List<T> items = [];
+  void park(T item) => items.add(item);
+  T? unpark() => items.isNotEmpty ? items.removeLast() : null;
+}
+
+class MyNum {
+  int value;
+  MyNum(this.value);
+  MyNum operator +(MyNum o) => MyNum(value + o.value);
+  MyNum operator -(MyNum o) => MyNum(value - o.value);
+  MyNum operator *(MyNum o) => MyNum(value * o.value);
+  MyNum operator /(MyNum o) => MyNum(value ~/ o.value);
+  @override
+  String toString() => value.toString();
+}
+
+enum CarState { stop, drive, turn }
+
+class Car {
+  CarState state = CarState.stop;
+  void drive() => state = CarState.drive;
+  void turn() => state = CarState.turn;
+  void stop() => state = CarState.stop;
+  void showState() => print("Состояние: $state");
+}
+
+abstract class Figure {
+  double area();
+}
+
+class Rectangle extends Figure {
+  double w, h;
+  Rectangle(this.w, this.h);
+  @override
+  double area() => w * h;
+}
+
+class Triangle extends Figure {
+  double b, h;
+  Triangle(this.b, this.h);
+  @override
+  double area() => 0.5 * b * h;
+}
+
+class Circle extends Figure {
+  double r;
+  Circle(this.r);
+  @override
+  double area() => 3.14 * r * r;
+}
+
+class FigureManager {
+  final List<Figure> figures = [];
+  void add(Figure f) => figures.add(f);
+  double getMaxArea() {
+    double max = 0;
+    for (var f in figures) {
+      if (f.area() > max) max = f.area();
+    }
+    return max;
+  }
+}
